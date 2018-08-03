@@ -1,0 +1,58 @@
+import numpy as np
+from matplotlib import pyplot as plt
+class NeuralNet:
+    def __init__(self,No_of_Input,No_of_HiddenNodes,No_of_output):
+        self.no_of_inputs=No_of_Input
+        self.no_of_outputs=No_of_output
+        self.no_of_hiddenNodes=No_of_HiddenNodes
+        self.Wiegts_in_Hidden=np.random.randn(self.no_of_inputs,self.no_of_hiddenNodes)
+        self.Wiegts_in_output=np.random.randn(self.no_of_hiddenNodes,self.no_of_outputs)
+    def sigmoid(self,input):
+        return 1/(1+np.exp(-input))
+    def sigmoid_derivative(self,input):
+       return np.exp(-input)/((1+np.exp(-input))**2)
+    def forward(self,input_vector):
+        self.y=np.dot(input_vector,self.Wiegts_in_Hidden)
+        self.y1=self.sigmoid(self.y)
+        self.z1=np.dot(self.y1,self.Wiegts_in_output)
+        zhat=self.sigmoid(self.z1)
+        return zhat
+
+    def Train(self,inputData,TargetData):
+         targetVector=np.array(TargetData).T
+         delta2=np.multiply(-(targetVector-a.forward(inputData)),self.sigmoid_derivative(self.z1))
+         delta1=np.dot(delta2,self.Wiegts_in_output.T)*self.sigmoid_derivative(self.y)
+         DJDW2=np.dot(self.y1.T,delta2)
+         DJDW1=np.dot(inputData.T,delta1)
+
+         self.Wiegts_in_output+=DJDW2*-0.06
+         self.Wiegts_in_Hidden+=DJDW1*-0.06
+
+
+
+
+
+
+inputData=np.array([[5,3,3],[7,8,7],[9,8,9],[7,7,10],[2,1,3],[4,3,1],[7,8,8],[2,2,1],
+                    [5,4,3],[7,8,7],[6,7,9],[5,6,7],[2,1,1],[2,4,2],[2,3,2],[9,9,9],[10,10,10],[9,10,8],
+                    [2,4,4],[3,4,2],[2,2,1],[8,7,6],[4,4,4]],dtype=float)
+targetData=np.array(([[0,1,1,1,0,0,1,0,0,1,1,1,0,0,0,1,0,1,0,0,0,1,0]]),dtype=float)
+
+Testdata=np.array([[2,2,1],[7,6,7],[1,2,2],[7,8,6],[8,7,6],[2,3,2],[10,10,10],[1,2,3]],dtype=float)
+a=NeuralNet(3,4,1)
+b=a.Train(inputData,targetData)
+print(b)
+cost=0.5*sum(targetData.T-a.forward(inputData))**2
+print(cost)
+Cost_P=np.zeros(3000)
+iteration=np.arange(0,3000)
+[0.53110741]
+for i in range(1000):
+    a.Train(inputData, targetData)
+    cost=0.5*sum(targetData.T-a.forward(inputData))**2
+    Cost_P[i]=cost
+plt.plot(iteration,Cost_P)
+plt.show()
+print(a.forward(Testdata))
+
+
